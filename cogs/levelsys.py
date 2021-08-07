@@ -1,4 +1,6 @@
 import discord
+import secrets
+import string
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -103,6 +105,30 @@ class levelsys(commands.Cog):
                 if i == 11:
                     break
             await ctx.channel.send(embed=embed)
+
+    @commands.command()
+    async def auth(self, ctx):
+        stats = levelling.find_one({"id" : ctx.author.id})
+        token = ''.join((secrets.choice(string.ascii_letters + string.digits + string.punctuation) for i in range(8)))
+        userAvatarUrl = ctx.message.author.avatar_url_as(format='png', static_format='png', size=1024)
+        userName = ctx.author.name
+        if stats is None:
+            newuser = {"id": ctx.author.id, "xp": 100, "auth": token, "pfp": str(userAvatarUrl), "name": userName}
+            levelling.insert_one(newuser)
+        else:
+            xp = stats["xp"]
+            levelling.update_one({"id" : ctx.author.id}, {"$set" : {"xp" : xp, "auth" : token, "pfp": str(userAvatarUrl), "name": userName}}, upsert=True)
+        author = ctx.message.author
+        embed = discord.Embed(
+            colour=discord.Colour.blue()
+        )
+        embed.set_author(name='Auth details')
+        embed.add_field(name='Discord ID: ', value=ctx.author.id, inline=False)
+        embed.add_field(name='Auth Code: ', value=token, inline=False)
+
+        await author.send(embed=embed)
+        await ctx.channel.send(f"{author.mention} check your DMs!")
+
 
 def setup(bot):
     bot.add_cog(levelsys(bot))
