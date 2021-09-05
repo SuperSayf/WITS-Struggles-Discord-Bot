@@ -3,6 +3,9 @@ import os
 from discord.ext import commands
 from discord_components import *
 from prsaw import RandomStuffV2
+import pyrebase
+import time
+from random import randint
 
 ###########################################################################################
 
@@ -15,6 +18,19 @@ bot = commands.Bot(command_prefix="|", intents=intents, activity=activity,
                    status=discord.Status.online)
 
 bot.remove_command('help')
+
+###########################################################################################
+
+bot.lava_nodes = [
+    {
+        'host': 'lava.link',
+        'port': 80,
+        'rest_uri': f'http://lava.link:80',
+        'identifier': 'MAIN',
+        'password': 'anything',
+        'region': 'singapore'
+    }
+]
 
 ###########################################################################################
 
@@ -32,22 +48,46 @@ async def on_ready():
             print(cog + " was loaded.")
         except Exception as e:
             print(e)
+bot.load_extension('dismusic')
 
 ###########################################################################################
 
-rs = RandomStuffV2(async_mode = True)
+rs = RandomStuffV2() 
 
 no_Talk_Chanels = [819927672477450283,820009033703882792,820687219568017459,821088628431257600]
+Talk_Chanels = [857618527825559563]
+
+#Initialize Firebase
+firebaseConfig={
+  "apiKey": "***REMOVED***",
+  "authDomain": "***REMOVED***",
+  "databaseURL": "***REMOVED***",
+  "projectId": "***REMOVED***",
+  "storageBucket": "***REMOVED***.appspot.com",
+  "messagingSenderId": "***REMOVED***",
+  "appId": "1:***REMOVED***:web:4613b01fc6286a9d71c6ea",
+  "measurementId": "***REMOVED***"
+}
+
+firebase=pyrebase.initialize_app(firebaseConfig)
+
+db=firebase.database()
 
 @bot.event
 async def on_message(message):
     if bot.user == message.author:
+        return
+    if message.webhook_id:
         return
     if message.channel.id in no_Talk_Chanels:
         return
     if bot.user.mentioned_in(message):
         response = await rs.get_ai_response(message.content)
         await message.reply(response)
+    else:
+        if message.channel.id in Talk_Chanels:
+            data = {"UserMessage":message.content,"Username":message.author.name + " (Discord)"}
+            db.child("Messages").child(str(round(time.time()))+"-"+str(randint(10, 9999999))).set(data)
     await bot.process_commands(message)
 
 ###########################################################################################
