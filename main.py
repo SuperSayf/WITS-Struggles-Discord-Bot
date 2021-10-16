@@ -34,7 +34,7 @@ bot.lava_nodes = [
 
 ###########################################################################################
 
-cogs = ["cogs.ping","cogs.rip.rip","cogs.levelsys","cogs.rps"]
+cogs = ["cogs.ping","cogs.rip.rip","cogs.levelsys","cogs.rps", "cogs.drive.drive"]
 
 
 @bot.event
@@ -49,6 +49,22 @@ async def on_ready():
         except Exception as e:
             print(e)
 bot.load_extension('dismusic')
+
+###########################################################################################
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"{ctx.author.mention} Missing a required argument (|drive course link info)")
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send(f"{ctx.author.mention} You do not have the appropriate permissions to run this command.")
+    if isinstance(error, commands.BotMissingPermissions):
+        await ctx.send(f"{ctx.author.mention} I don't have sufficient permissions!")
+    else:
+        print("error not caught")
+        print(error)
 
 ###########################################################################################
 
