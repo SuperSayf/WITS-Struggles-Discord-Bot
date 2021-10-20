@@ -116,6 +116,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+cogs/drive/keys.json
 
 # Spyder project settings
 .spyderproject
