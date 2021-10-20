@@ -6,6 +6,9 @@ from prsaw import RandomStuffV2
 import pyrebase
 import time
 from random import randint
+from dotenv import load_dotenv
+
+load_dotenv()
 
 ###########################################################################################
 
@@ -75,14 +78,14 @@ Talk_Chanels = [857618527825559563]
 
 #Initialize Firebase
 firebaseConfig={
-  "apiKey": "***REMOVED***",
-  "authDomain": "***REMOVED***",
-  "databaseURL": "***REMOVED***",
-  "projectId": "***REMOVED***",
-  "storageBucket": "***REMOVED***.appspot.com",
-  "messagingSenderId": "***REMOVED***",
-  "appId": "1:***REMOVED***:web:4613b01fc6286a9d71c6ea",
-  "measurementId": "***REMOVED***"
+  "apiKey": os.getenv("FIREBASE_API_KEY"),
+  "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
+  "databaseURL": os.getenv("FIREBASE_DATABASE_URL"),
+  "projectId": os.getenv("FIREBASE_PROJECT_ID"),
+  "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
+  "messagingSenderId": os.getenv("FIREBASE_MESSAGIN_SEND_ID"),
+  "appId": os.getenv("FIREBASE_APP_ID"),
+  "measurementId": os.getenv("FIREBASE_MEASUREMENT_ID")
 }
 
 firebase=pyrebase.initialize_app(firebaseConfig)
@@ -132,4 +135,4 @@ async def help(ctx):
 
 ###########################################################################################
 
-bot.run("***REMOVED***")
+bot.run(os.getenv("DISCORD_BOT_TOKEN"))
