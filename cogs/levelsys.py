@@ -1,6 +1,7 @@
 import discord
 import secrets
 import string
+import os
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -11,8 +12,7 @@ talk_chanels = [819930408824471582, 819934375327039538, 819934432369705012, 8478
 level = ["lvl 10", "lvl 20", "lvl 30", "lvl 40", "lvl 50", "lvl 60", "lvl 70", "lvl 80", "lvl 90", "Legend (max lvl)"]
 levelnum = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-cluster = MongoClient(
-    "***REMOVED***")
+cluster = MongoClient(os.getenv("MONGO_TOKEN"))
 
 levelling = cluster["discord"]["levelling"]
 

@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -10,7 +11,7 @@ SERVICE_ACCOUNT_FILE = 'cogs/drive/keys.json'
 creds = None
 creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-SPREADSHEET_ID = '***REMOVED***'
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 
 service = build('sheets', 'v4', credentials=creds)
 
